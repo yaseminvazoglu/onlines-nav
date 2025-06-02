@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Sınav Sitesi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Senin verdiğin CSS kodları burada */
+    body {
+      margin: 0;
+      background: #f7faff;
+      color: #222;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 210px;
+      height: 100vh;
+      background: #e3eefd;
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      box-shadow: 2px 0 12px #0001;
+    }
+    .sidebar-title {
+      color: #1976d2;
+      font-weight: bold;
+      font-size: 1.15rem;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+    .class-btn {
+      width: 160px;
+      height: 48px;
+      margin-bottom: 10px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      border-radius: 10px;
+      background: #e3eefd;
+      color: #1976d2;
+      border: 2px solid #90caf9;
+      transition: 0.15s;
+      text-align: left;
+      padding-left: 18px;
+    }
+    .class-btn:hover, .class-btn.active {
+      background: #1976d2;
+      color: #fff;
+      border-color: #1976d2;
+      transform: scale(1.04);
+    }
+    .top-buttons {
+      position: fixed;
+      top: 18px;
+      right: 32px;
+      z-index: 20;
+      display: flex;
+      gap: 10px;
+    }
+    .main-content {
+      margin-left: 230px;
+      padding: 40px 20px 0 0;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .search-area {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 540px;
+      margin-left: 0;
+    }
+    .search-area form {
+      width: 100%;
+    }
+    .search-area input {
+      font-size: 1.45rem !important;
+      height: 64px !important;
+      padding-left: 18px;
+      background: #fff;
+      border: 2px solid #90caf9;
+      color: #1976d2;
+    }
+    .search-area button {
+      min-width: 120px !important;
+      font-size: 1.25rem !important;
+      height: 64px !important;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+    }
+    .search-area button:hover {
+      background: #1565c0;
+    }
+    .most-searched {
+      background: #e3eefd;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-top: 22px;
+      width: 100%;
+    }
+    .most-searched-title {
+      color: #1976d2;
+      font-weight: bold;
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+    .most-searched-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .welcome-box {
+      margin-top: 38px;
+      margin-bottom: 24px;
+      background: #e3eefd;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px #0001;
+      padding: 28px 24px 16px 24px;
+      max-width: 540px;
+      width: 100%;
+      text-align: left;
+    }
+    .welcome-title {
+      color: #1976d2;
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .welcome-desc {
+      font-size: 1.08rem;
+      color: #222;
+    }
+    .big-title {
+      font-size: 2.3rem;
+      font-weight: bold;
+      color: #1976d2;
+      text-shadow: 0 2px 12px #0001;
+      letter-spacing: 2px;
+      margin-bottom: 18px;
+      margin-top: 60px;
+      text-align: center;
+      border-bottom: 3px solid #1976d2;
+      padding-bottom: 10px;
+      width: 100vw;
+      max-width: 100vw;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: #e3eefd;
+      z-index: 100;
+    }
+    .about-right-panel {
+      position: fixed;
+      top: 80px;
+      right: 0;
+      width: 420px;
+      max-width: 98vw;
+      height: calc(100vh - 120px);
+      background: #e3eefd;
+      color: #222;
+      border-radius: 18px 0 0 18px;
+      box-shadow: 0 2px 24px rgba(25, 118, 210, 0.08);
+      padding: 32px 28px 18px 28px;
+      z-index: 50;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .about-title {
+      color: #1976d2;
+      font-weight: bold;
+      letter-spacing: 1px;
+      font-size: 2rem;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .about-text {
+      font-size: 1.15rem;
+      color: #222;
+      margin-bottom: 18px;
+    }
+    .comments-title {
+      color: #1976d2;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    .comment-list {
+      margin-bottom: 16px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+    .comment-item {
+      border-bottom: 1px solid #90caf9;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+    .comment-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .comment-form input, .comment-form textarea {
+      margin-bottom: 8px;
+      background: #fff;
+      color: #1976d2;
+      border: 1.5px solid #90caf9;
+    }
+    .lesson-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 32px;
+      align-items: flex-start;
+    }
+    .exam-levels {
+      display: flex;
+      gap: 16px;
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+    .exam-levels button {
+      min-width: 120px;
+    }
+    .back-btn {
+      margin-top: 32px;
+    }
+    #timer {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1976d2;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+    .question-box {
+      background: #f4f8fd;
+      border: 2px solid #90caf9;
+      border-radius: 14px;
+      padding: 22px 18px 12px 18px;
+      margin-bottom: 28px;
+      font-size: 1.22rem;
+      box-shadow: 0 2px 8px #1976d210;
+    }
+    .question-box label {
+      font-size: 1.13rem;
+      margin-right: 18px;
+      margin-top: 8px;
+      display: inline-block;
+      cursor: pointer;
+      color: #1976d2;
+    }
+    .question-box input[type="radio"] {
+      margin-right: 6px;
+      accent-color: #1976d2;
+    }
+    @media (max-width: 1100px) {
+      .about-right-panel { width: 98vw; border-radius: 0; left:0; right:0; }
+      .main-content { margin-left: 0; }
+      .sidebar { left: 0; width: 100vw; height: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; box-shadow: none; }
+      .class-btn { width: 120px; height: 48px; margin: 8px; font-size: 1rem; }
+    }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .about-right-panel { display: none; }
+      .main-content { margin-left: 0; }
+      .big-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+<!-- SOLDA SINIF KUTULARI -->
+<div class="sidebar">
+  <div class="big-title" style="position:static; font-size:1.1rem; margin:0 0 18px 0; border:none; background:none; box-shadow:none;color: #222; text-align:center;">
+    Online Sınav Sitesi
+  </div>
+  <div class="sidebar-title">Sınıf Kategorileri</div>
+  <button class="class-btn" onclick="showLessons(1)">1. Sınıf</button>
+  <button class="class-btn" onclick="showLessons(2)">2. Sınıf</button>
+  <button class="class-btn" onclick="showLessons(3)">3. Sınıf</button>
+  <button class="class-btn" onclick="showLessons(4)">4. Sınıf</button>
+</div>
+  <!-- SAĞ ÜSTTE BUTONLAR -->
+  <div class="top-buttons">
+    <button class="btn btn-outline-primary btn-sm" id="girisBtn">Giriş Yap</button>
+    <button class="btn btn-outline-warning btn-sm" id="adminBtn">Admin Girişi</button>
+    <button class="btn btn-outline-success btn-sm" id="uyeBtn">Üye Ol</button>
+  </div>
+  <!-- ORTADA ANA İÇERİK -->
+  <div class="main-content" id="main-content"></div>
+    <!-- KULLANICI SON TESTLER PANELİ -->
+  <div id="son-testler-paneli" style="display:none; margin-left:230px; margin-top:20px; max-width:600px; width:100%;">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        Son Çözdüğünüz 10 Test Sonucu
+      </div>
+      <ul class="list-group list-group-flush" id="son-testler-listesi">
+        <!-- Son testler buraya gelecek -->
+      </ul>
+    </div>
+  </div>
+  <!-- SAĞDA HAKKIMIZDA VE YORUMLAR -->
+  <div class="about-right-panel">
+    <div>
+      <div class="about-title">Hakkımızda</div>
+      <div class="about-text">
+        Online Sınav Sitesi, öğrencilerin ve öğretmenlerin dijital ortamda kolayca sınav yapabilmesini ve değerlendirme alabilmesini sağlayan modern bir platformdur.<br>
+        Farklı sınıf ve derslere özel sınavlar, zamanlayıcı, anında puanlama ve kullanıcı dostu arayüz ile eğitimde dijitalleşmeyi destekliyoruz.<br>
+        Gelişmiş sınav yönetimi ve güvenli ortam ile başarıya ulaşmak artık çok daha kolay!
+      </div>
+    </div>
+    <div>
+      <div class="comments-title">Kullanıcı Yorumları</div>
+      <div id="yorumlar-listesi" class="comment-list">
+        <div class="comment-item">
+          <b>Ayşe K.</b> <span style="color:#aaa; font-size:0.9em;">- Öğrenci</span><br>
+          Çok pratik ve anlaşılır bir site, sınavlar sayesinde kendimi test edebiliyorum.
+        </div>
+        <div class="comment-item">
+          <b>Mehmet T.</b> <span style="color:#aaa; font-size:0.9em;">- Öğretmen</span><br>
+          Sınav hazırlamak ve sonuçları görmek çok kolay, herkese tavsiye ederim.
+        </div>
+        <div class="comment-item">
+          <b>Elif Y.</b> <span style="color:#aaa; font-size:0.9em;">- Veli</span><br>
+          Çocuğumun gelişimini takip etmek için harika bir platform.
+        </div>
+      </div>
+      <form id="yorum-formu" class="comment-form" onsubmit="addYorum(event)">
+        <input type="text" id="yorum-ad" class="form-control form-control-sm" placeholder="Adınız" required>
+        <textarea id="yorum-metin" class="form-control form-control-sm" placeholder="Yorumunuz" rows="2" required></textarea>
+        <button type="submit" class="btn btn-sm btn-primary w-100">Yorum Gönder</button>
+      </form>
+    </div>
+  </div>
+  <!-- MODALLAR -->
+  <div class="modal fade" id="uyeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="uyeForm" onsubmit="uyeOl(event)">
+          <div class="modal-header">
+            <h5 class="modal-title">Üye Ol</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="email" class="form-control mb-2" id="uyeEmail" placeholder="Gmail adresiniz" required pattern=".+@gmail\.com">
+            <input type="password" class="form-control mb-2" id="uyeSifre" placeholder="Şifre (en az 8 karakter)" required minlength="8">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Üye Ol</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="girisModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="girisForm" onsubmit="girisYap(event)">
+          <div class="modal-header">
+            <h5 class="modal-title">Giriş Yap</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="email" class="form-control mb-2" id="girisEmail" placeholder="Gmail adresiniz" required pattern=".+@gmail\.com">
+            <input type="password" class="form-control mb-2" id="girisSifre" placeholder="Şifreniz" required minlength="8">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="adminModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="adminForm" onsubmit="adminGiris(event)">
+          <div class="modal-header">
+            <h5 class="modal-title">Admin Girişi</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="email" class="form-control mb-2" id="adminEmail" placeholder="Gmail adresiniz" required pattern=".+@gmail\.com">
+            <input type="password" class="form-control mb-2" id="adminSifre" placeholder="Şifreniz" required minlength="8">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-warning">Giriş Yap</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Modal açma işlemleri
+    document.getElementById('uyeBtn').onclick = ()=>bootstrap.Modal.getOrCreateInstance(document.getElementById('uyeModal')).show();
+    document.getElementById('girisBtn').onclick = ()=>bootstrap.Modal.getOrCreateInstance(document.getElementById('girisModal')).show();
+    document.getElementById('adminBtn').onclick = ()=>bootstrap.Modal.getOrCreateInstance(document.getElementById('adminModal')).show();
+
+    // Sınav soruları (her ders için 10 soru)
+    const SINAV_SORULARI = {
+      // 1. Sınıf
+      "1-Türkçe": [
+        { soru: "Aşağıdakilerden hangisi bir isimdir?", secenekler: ["Güzel", "Kitap", "Koşmak", "Yeşil"], dogru: "B" },
+        { soru: "Aşağıdaki cümlelerin hangisinde fiil vardır?", secenekler: ["Kedi masanın altında.", "Çocuk top oynuyor.", "Ev çok büyük.", "Kalem kırmızı."], dogru: "B" },
+        { soru: "Aşağıdaki kelimelerden hangisi zıt anlamlıdır?", secenekler: ["Büyük - Küçük", "Uzun - Kısa", "Güzel - Çirkin", "Hepsi"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir hayvan değildir?", secenekler: ["Köpek", "Kedi", "Araba", "Kuş"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi olumsuzdur?", secenekler: ["Bugün hava güzel.", "Ben okula gitmedim.", "Ali kitap okuyor.", "Ayşe koşuyor."], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir renk değildir?", secenekler: ["Mavi", "Sarı", "Elma", "Kırmızı"], dogru: "C" },
+        { soru: "Aşağıdaki kelimelerden hangisi çoğul değildir?", secenekler: ["Kitaplar", "Çocuklar", "Ev", "Kuşlar"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi soru cümlesidir?", secenekler: ["Sen okula gittin mi?", "Ben kitap okudum.", "Ali koşuyor.", "Ayşe şarkı söylüyor."], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organı değildir?", secenekler: ["Göz", "Kulak", "Burun", "Elma"], dogru: "D" },
+        { soru: "Aşağıdaki kelimelerden hangisi fiildir?", secenekler: ["Yemek", "Kırmızı", "Güzel", "Ev"], dogru: "A" }
+      ],
+      "1-Matematik": [
+        { soru: "2 + 3 işleminin sonucu kaçtır?", secenekler: ["4", "5", "6", "7"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi çift sayıdır?", secenekler: ["3", "5", "8", "7"], dogru: "C" },
+        { soru: "10 - 4 işleminin sonucu kaçtır?", secenekler: ["5", "6", "7", "8"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en büyüktür?", secenekler: ["12", "9", "7", "5"], dogru: "A" },
+        { soru: "5 + 5 işleminin sonucu kaçtır?", secenekler: ["9", "10", "11", "12"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi tek sayıdır?", secenekler: ["2", "4", "6", "9"], dogru: "D" },
+        { soru: "7 - 3 işleminin sonucu kaçtır?", secenekler: ["3", "4", "5", "6"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en küçüktür?", secenekler: ["1", "3", "5", "7"], dogru: "A" },
+        { soru: "6 + 2 işleminin sonucu kaçtır?", secenekler: ["7", "8", "9", "10"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir geometrik şekildir?", secenekler: ["Kare", "Elma", "Kitap", "Kalem"], dogru: "A" }
+      ],
+      "1-İngilizce": [
+        { soru: "‘Cat’ kelimesinin Türkçesi nedir?", secenekler: ["Köpek", "Kedi", "Kuş", "Balık"], dogru: "B" },
+        { soru: "‘Red’ hangi renktir?", secenekler: ["Kırmızı", "Mavi", "Yeşil", "Sarı"], dogru: "A" },
+        { soru: "‘Book’ ne demektir?", secenekler: ["Defter", "Kalem", "Kitap", "Silgi"], dogru: "C" },
+        { soru: "‘Hello’ ne anlama gelir?", secenekler: ["Hoşça kal", "Merhaba", "Teşekkürler", "Lütfen"], dogru: "B" },
+        { soru: "‘Dog’ kelimesinin Türkçesi nedir?", secenekler: ["Kedi", "Kuş", "Köpek", "Balık"], dogru: "C" },
+        { soru: "‘Blue’ hangi renktir?", secenekler: ["Kırmızı", "Mavi", "Yeşil", "Sarı"], dogru: "B" },
+        { soru: "‘Pen’ ne demektir?", secenekler: ["Silgi", "Kalem", "Kitap", "Çanta"], dogru: "B" },
+        { soru: "‘Goodbye’ ne anlama gelir?", secenekler: ["Merhaba", "Hoşça kal", "Lütfen", "Teşekkürler"], dogru: "B" },
+        { soru: "‘Fish’ kelimesinin Türkçesi nedir?", secenekler: ["Kuş", "Balık", "Köpek", "Kedi"], dogru: "B" },
+        { soru: "‘Green’ hangi renktir?", secenekler: ["Yeşil", "Kırmızı", "Mavi", "Sarı"], dogru: "A" }
+      ],
+      // 2. Sınıf
+      "2-Türkçe": [
+        { soru: "Aşağıdakilerden hangisi eş anlamlı kelimedir?", secenekler: ["Büyük - Ufak", "Güzel - Çirkin", "Ev - Konut", "Küçük - Büyük"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi soru cümlesidir?", secenekler: ["Ali okula gitti.", "Sen ne yaptın?", "Ayşe kitap okuyor.", "Kuş uçuyor."], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir fiildir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir hayvan değildir?", secenekler: ["Kedi", "Kuş", "Araba", "Balık"], dogru: "C" },
+        { soru: "Aşağıdaki kelimelerden hangisi çoğul değildir?", secenekler: ["Evler", "Çocuklar", "Kitap", "Kuşlar"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi bir renk değildir?", secenekler: ["Mavi", "Sarı", "Elma", "Kırmızı"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi olumsuzdur?", secenekler: ["Ben gelmedim.", "Ali koşuyor.", "Ayşe şarkı söylüyor.", "Kuş uçuyor."], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi zıt anlamlıdır?", secenekler: ["Büyük - Küçük", "Uzun - Kısa", "Güzel - Çirkin", "Hepsi"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organı değildir?", secenekler: ["Göz", "Kulak", "Burun", "Elma"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi isimdir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "C" }
+      ],
+      "2-Matematik": [
+        { soru: "5 + 7 işleminin sonucu kaçtır?", secenekler: ["11", "12", "13", "14"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi çift sayıdır?", secenekler: ["3", "6", "7", "9"], dogru: "B" },
+        { soru: "15 - 8 işleminin sonucu kaçtır?", secenekler: ["6", "7", "8", "9"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en küçüktür?", secenekler: ["2", "4", "6", "8"], dogru: "A" },
+        { soru: "8 + 2 işleminin sonucu kaçtır?", secenekler: ["9", "10", "11", "12"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi tek sayıdır?", secenekler: ["2", "4", "7", "8"], dogru: "C" },
+        { soru: "9 - 5 işleminin sonucu kaçtır?", secenekler: ["3", "4", "5", "6"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en büyüktür?", secenekler: ["10", "12", "8", "6"], dogru: "B" },
+        { soru: "7 + 3 işleminin sonucu kaçtır?", secenekler: ["9", "10", "11", "12"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir geometrik şekildir?", secenekler: ["Daire", "Elma", "Kitap", "Kalem"], dogru: "A" }
+      ],
+      "2-İngilizce": [
+        { soru: "‘Apple’ kelimesinin Türkçesi nedir?", secenekler: ["Armut", "Elma", "Muz", "Portakal"], dogru: "B" },
+        { soru: "‘Yellow’ hangi renktir?", secenekler: ["Sarı", "Mavi", "Yeşil", "Kırmızı"], dogru: "A" },
+        { soru: "‘Table’ ne demektir?", secenekler: ["Sandalye", "Masa", "Kitap", "Çanta"], dogru: "B" },
+        { soru: "‘Good morning’ ne anlama gelir?", secenekler: ["Günaydın", "İyi akşamlar", "Hoşça kal", "Merhaba"], dogru: "A" },
+        { soru: "‘Bird’ kelimesinin Türkçesi nedir?", secenekler: ["Kuş", "Kedi", "Köpek", "Balık"], dogru: "A" },
+        { soru: "‘Black’ hangi renktir?", secenekler: ["Siyah", "Beyaz", "Kırmızı", "Mavi"], dogru: "A" },
+        { soru: "‘Chair’ ne demektir?", secenekler: ["Masa", "Sandalye", "Kitap", "Çanta"], dogru: "B" },
+        { soru: "‘See you’ ne anlama gelir?", secenekler: ["Hoşça kal", "Merhaba", "Teşekkürler", "Lütfen"], dogru: "A" },
+        { soru: "‘Dog’ kelimesinin Türkçesi nedir?", secenekler: ["Kedi", "Kuş", "Köpek", "Balık"], dogru: "C" },
+        { soru: "‘White’ hangi renktir?", secenekler: ["Beyaz", "Siyah", "Kırmızı", "Mavi"], dogru: "A" }
+      ],
+      "2-Hayat Bilgisi": [
+        { soru: "Okulda ilk kiminle tanışırsın?", secenekler: ["Öğretmen", "Müdür", "Arkadaş", "Hizmetli"], dogru: "A" },
+        {soru: "Aşağıdakilerden hangisi temizlik kuralıdır?", secenekler: ["Ellerimizi yıkamak", "Yere çöp atmak", "Bağırmak", "Koşmak"], dogru: "A" },
+        { soru: "Evde yangın çıkarsa ilk ne yapılmalı?", secenekler: ["Pencere açılır", "İtfaiye aranır", "Uyunur", "Televizyon izlenir"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi sağlıklı bir alışkanlıktır?", secenekler: ["Diş fırçalamak", "Çok şeker yemek", "Geç yatmak", "Ellerimizi yıkamamak"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi aile bireyidir?", secenekler: ["Anne", "Komşu", "Öğretmen", "Arkadaş"], dogru: "A" },
+        { soru: "Okulda ne zaman zil çalar?", secenekler: ["Ders başında", "Ders sonunda", "Yemekte", "Evde"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi trafik kuralıdır?", secenekler: ["Kırmızıda durmak", "Yolda koşmak", "Kaldırımda bisiklet sürmek", "Yaya geçidi kullanmamak"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi doğrudur?", secenekler: ["Çöpleri çöp kutusuna atmak", "Çöpleri yere atmak", "Çöpleri saklamak", "Çöpleri yakmak"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi okulda yapılmaz?", secenekler: ["Ders çalışmak", "Arkadaşlarla kavga etmek", "Öğretmeni dinlemek", "Oyun oynamak"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi sağlıklı bir içecektir?", secenekler: ["Su", "Gazoz", "Kola", "Enerji içeceği"], dogru: "A" }
+      ],
+      // 3. Sınıf
+      "3-Türkçe": [
+        { soru: "Aşağıdakilerden hangisi zamirdir?", secenekler: ["Ben", "Kitap", "Güzel", "Koşmak"], dogru: "A" },
+        { soru: "Aşağıdaki cümlelerden hangisi soru cümlesidir?", secenekler: ["Ali okula gitti.", "Sen ne yaptın?", "Ayşe kitap okuyor.", "Kuş uçuyor."], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi fiildir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir hayvan değildir?", secenekler: ["Kedi", "Kuş", "Araba", "Balık"], dogru: "C" },
+        { soru: "Aşağıdaki kelimelerden hangisi çoğul değildir?", secenekler: ["Evler", "Çocuklar", "Kitap", "Kuşlar"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi bir renk değildir?", secenekler: ["Mavi", "Sarı", "Elma", "Kırmızı"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi olumsuzdur?", secenekler: ["Ben gelmedim.", "Ali koşuyor.", "Ayşe şarkı söylüyor.", "Kuş uçuyor."], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi zıt anlamlıdır?", secenekler: ["Büyük - Küçük", "Uzun - Kısa", "Güzel - Çirkin", "Hepsi"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organı değildir?", secenekler: ["Göz", "Kulak", "Burun", "Elma"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi isimdir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "C" }
+      ],
+      "3-Matematik": [
+        { soru: "12 + 8 işleminin sonucu kaçtır?", secenekler: ["18", "19", "20", "21"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi çift sayıdır?", secenekler: ["11", "12", "13", "15"], dogru: "B" },
+        { soru: "20 - 7 işleminin sonucu kaçtır?", secenekler: ["12", "13", "14", "15"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en küçüktür?", secenekler: ["5", "7", "9", "11"], dogru: "A" },
+        { soru: "9 + 6 işleminin sonucu kaçtır?", secenekler: ["14", "15", "16", "17"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi tek sayıdır?", secenekler: ["8", "10", "13", "16"], dogru: "C" },
+        { soru: "18 - 9 işleminin sonucu kaçtır?", secenekler: ["8", "9", "10", "11"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en büyüktür?", secenekler: ["14", "16", "12", "10"], dogru: "B" },
+        { soru: "7 + 8 işleminin sonucu kaçtır?", secenekler: ["14", "15", "16", "17"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir geometrik şekildir?", secenekler: ["Üçgen", "Elma", "Kitap", "Kalem"], dogru: "A" }
+      ],
+      "3-İngilizce": [
+        { soru: "‘Orange’ kelimesinin Türkçesi nedir?", secenekler: ["Elma", "Portakal", "Muz", "Armut"], dogru: "B" },
+        { soru: "‘Pink’ hangi renktir?", secenekler: ["Pembe", "Mavi", "Yeşil", "Kırmızı"], dogru: "A" },
+        { soru: "‘Window’ ne demektir?", secenekler: ["Kapı", "Pencere", "Kitap", "Çanta"], dogru: "B" },
+        { soru: "‘Good night’ ne anlama gelir?", secenekler: ["Günaydın", "İyi geceler", "Hoşça kal", "Merhaba"], dogru: "B" },
+        { soru: "‘Cat’ kelimesinin Türkçesi nedir?", secenekler: ["Köpek", "Kedi", "Kuş", "Balık"], dogru: "B" },
+        { soru: "‘Brown’ hangi renktir?", secenekler: ["Kahverengi", "Beyaz", "Kırmızı", "Mavi"], dogru: "A" },
+        { soru: "‘Book’ ne demektir?", secenekler: ["Defter", "Kalem", "Kitap", "Silgi"], dogru: "C" },
+        { soru: "‘See you’ ne anlama gelir?", secenekler: ["Hoşça kal", "Merhaba", "Teşekkürler", "Lütfen"], dogru: "A" },
+        { soru: "‘Dog’ kelimesinin Türkçesi nedir?", secenekler: ["Kedi", "Kuş", "Köpek", "Balık"], dogru: "C" },
+        { soru: "‘White’ hangi renktir?", secenekler: ["Beyaz", "Siyah", "Kırmızı", "Mavi"], dogru: "A" }
+      ],
+      "3-Hayat Bilgisi": [
+        { soru: "Aşağıdakilerden hangisi bir toplu taşıma aracıdır?", secenekler: ["Otobüs", "Bisiklet", "Araba", "Kaykay"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi doğal afet değildir?", secenekler: ["Deprem", "Sel", "Yangın", "Futbol"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi ailedeki görevlerden biridir?", secenekler: ["Ev temizliği", "Okula gitmek", "Oyun oynamak", "Televizyon izlemek"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi sağlıklı bir besindir?", secenekler: ["Sebze", "Cips", "Çikolata", "Gazoz"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi çevreyi korumak için yapılmaz?", secenekler: ["Ağaç dikmek", "Çöp atmak", "Geri dönüşüm", "Temizlik"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir meslektir?", secenekler: ["Doktor", "Oyun", "Kitap", "Masa"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi okulda yapılmaz?", secenekler: ["Ders çalışmak", "Arkadaşlarla kavga etmek", "Öğretmeni dinlemek", "Oyun oynamak"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir hak değildir?", secenekler: ["Eğitim hakkı", "Sağlık hakkı", "Oyun hakkı", "Bağırma hakkı"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi güvenli bir davranıştır?", secenekler: ["Yaya geçidinden geçmek", "Kırmızı ışıkta geçmek", "Yolda koşmak", "Yolda bisiklet sürmek"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir aile bireyi değildir?", secenekler: ["Dede", "Baba", "Anne", "Komşu"], dogru: "D" }
+    ],
+      "3-Fen Bilimleri": [
+        { soru: "Bitkiler nasıl beslenir?", secenekler: ["Fotosentez", "Yemek yer", "Su içer", "Koşar"], dogru: "A" },
+        { soru: "İnsan vücudunda kaç kalp vardır?", secenekler: ["1", "2", "3", "4"], dogru: "A" },
+        { soru: "Güneş hangi tür bir gök cismidir?", secenekler: ["Yıldız", "Gezegen", "Uydu", "Meteor"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organıdır?", secenekler: ["Göz", "El", "Ayak", "Burun"], dogru: "A" },
+        { soru: "Su hangi sıcaklıkta donar?", secenekler: ["0°C", "10°C", "50°C", "100°C"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir enerji kaynağıdır?", secenekler: ["Güneş", "Tahta", "Karton", "Plastik"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi canlı değildir?", secenekler: ["Taş", "Kedi", "Ağaç", "Çiçek"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi çevre kirliliğine neden olur?", secenekler: ["Çöp atmak", "Ağaç dikmek", "Geri dönüşüm", "Temizlik"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir mevsim değildir?", secenekler: ["Yaz", "Kış", "Bahar", "Ay"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir gezegendir?", secenekler: ["Dünya", "Güneş", "Ay", "Yıldız"], dogru: "A" }
+    ],
+      // 4. Sınıf
+      "4-Türkçe": [
+        { soru: "Aşağıdakilerden hangisi zamirdir?", secenekler: ["Sen", "Kitap", "Güzel", "Koşmak"], dogru: "A" },
+        { soru: "Aşağıdaki cümlelerden hangisi soru cümlesidir?", secenekler: ["Ali okula gitti.", "Sen ne yaptın?", "Ayşe kitap okuyor.", "Kuş uçuyor."], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi fiildir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir hayvan değildir?", secenekler: ["Kedi", "Kuş", "Araba", "Balık"], dogru: "C" },
+        { soru: "Aşağıdaki kelimelerden hangisi çoğul değildir?", secenekler: ["Evler", "Çocuklar", "Kitap", "Kuşlar"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi bir renk değildir?", secenekler: ["Mavi", "Sarı", "Elma", "Kırmızı"], dogru: "C" },
+        { soru: "Aşağıdaki cümlelerden hangisi olumsuzdur?", secenekler: ["Ben gelmedim.", "Ali koşuyor.", "Ayşe şarkı söylüyor.", "Kuş uçuyor."], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi zıt anlamlıdır?", secenekler: ["Büyük - Küçük", "Uzun - Kısa", "Güzel - Çirkin", "Hepsi"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organı değildir?", secenekler: ["Göz", "Kulak", "Burun", "Elma"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi isimdir?", secenekler: ["Koşmak", "Kırmızı", "Ev", "Büyük"], dogru: "C" }
+      ],
+      "4-Matematik": [
+        { soru: "20 + 15 işleminin sonucu kaçtır?", secenekler: ["33", "34", "35", "36"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi çift sayıdır?", secenekler: ["17", "18", "19", "21"], dogru: "B" },
+        { soru: "30 - 12 işleminin sonucu kaçtır?", secenekler: ["16", "17", "18", "19"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi en küçüktür?", secenekler: ["8", "10", "12", "14"], dogru: "A" },
+        { soru: "14 + 9 işleminin sonucu kaçtır?", secenekler: ["22", "23", "24", "25"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi tek sayıdır?", secenekler: ["12", "14", "17", "20"], dogru: "C" },
+        { soru: "25 - 8 işleminin sonucu kaçtır?", secenekler: ["16", "17", "18", "19"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi en büyüktür?", secenekler: ["18", "20", "16", "14"], dogru: "B" },
+        { soru: "11 + 12 işleminin sonucu kaçtır?", secenekler: ["22", "23", "24", "25"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir geometrik şekildir?", secenekler: ["Dikdörtgen", "Elma", "Kitap", "Kalem"], dogru: "A" }
+      ],
+      "4-İngilizce": [
+        { soru: "‘Banana’ kelimesinin Türkçesi nedir?", secenekler: ["Elma", "Muz", "Portakal", "Armut"], dogru: "B" },
+        { soru: "‘Purple’ hangi renktir?", secenekler: ["Mor", "Mavi", "Yeşil", "Kırmızı"], dogru: "A" },
+        { soru: "‘Door’ ne demektir?", secenekler: ["Kapı", "Pencere", "Kitap", "Çanta"], dogru: "A" },
+        { soru: "‘Good evening’ ne anlama gelir?", secenekler: ["İyi akşamlar", "Günaydın", "Hoşça kal", "Merhaba"], dogru: "A" },
+        { soru: "‘Fish’ kelimesinin Türkçesi nedir?", secenekler: ["Kuş", "Balık", "Köpek", "Kedi"], dogru: "B" },
+        { soru: "‘Gray’ hangi renktir?", secenekler: ["Gri", "Beyaz", "Kırmızı", "Mavi"], dogru: "A" },
+        { soru: "‘Notebook’ ne demektir?", secenekler: ["Defter", "Kalem", "Kitap", "Çanta"], dogru: "A" },
+        { soru: "‘See you later’ ne anlama gelir?", secenekler: ["Sonra görüşürüz", "Merhaba", "Teşekkürler", "Lütfen"], dogru: "A" },
+        { soru: "‘Dog’ kelimesinin Türkçesi nedir?", secenekler: ["Kedi", "Kuş", "Köpek", "Balık"], dogru: "C" },
+        { soru: "‘Pink’ hangi renktir?", secenekler: ["Pembe", "Siyah", "Kırmızı", "Mavi"], dogru: "A" }
+      ],
+      "4-Hayat Bilgisi": [
+        { soru: "Aşağıdakilerden hangisi bir hak değildir?", secenekler: ["Oyun hakkı", "Eğitim hakkı", "Bağırma hakkı", "Sağlık hakkı"], dogru: "C" },
+        { soru: "Aşağıdakilerden hangisi bir sorumluluktur?", secenekler: ["Ödev yapmak", "Oyun oynamak", "Televizyon izlemek", "Uyumak"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi sağlıklı bir alışkanlıktır?", secenekler: ["Diş fırçalamak", "Çok şeker yemek", "Geç yatmak", "Ellerimizi yıkamamak"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir toplu taşıma aracıdır?", secenekler: ["Otobüs", "Bisiklet", "Araba", "Kaykay"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi çevreyi korumak için yapılmaz?", secenekler: ["Ağaç dikmek", "Çöp atmak", "Geri dönüşüm yapmak", "Enerji tasarrufu"], dogru: "B" },
+        { soru: "Aşağıdakilerden hangisi bir meslektir?", secenekler: ["Doktor", "Oyun", "Kitap", "Masa"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi güvenli bir davranıştır?", secenekler: ["Yaya geçidinden geçmek", "Kırmızı ışıkta geçmek", "Yolda koşmak", "Yolda bisiklet sürmek"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir aile bireyi değildir?", secenekler: ["Dede", "Baba", "Anne", "Komşu"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi doğal afet değildir?", secenekler: ["Deprem", "Sel", "Yangın", "Futbol"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi ailedeki görevlerden biridir?", secenekler: ["Ev temizliği", "Okula gitmek", "Oyun oynamak", "Televizyon izlemek"], dogru: "A" }
+     ],
+      "4-Fen Bilimleri": [
+        { soru: "Bitkiler nasıl beslenir?", secenekler: ["Fotosentez", "Yemek yer", "Su içer", "Koşar"], dogru: "A" },
+        { soru: "İnsan vücudunda kaç kalp vardır?", secenekler: ["1", "2", "3", "4"], dogru: "A" },
+        { soru: "Güneş hangi tür bir gök cismidir?", secenekler: ["Yıldız", "Gezegen", "Uydu", "Meteor"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir duyu organıdır?", secenekler: ["Göz", "El", "Ayak", "Burun"], dogru: "A" },
+        { soru: "Su hangi sıcaklıkta donar?", secenekler: ["0°C", "10°C", "50°C", "100°C"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir enerji kaynağıdır?", secenekler: ["Güneş", "Tahta", "Karton", "Plastik"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi canlı değildir?", secenekler: ["Taş", "Kedi", "Ağaç", "Çiçek"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi çevre kirliliğine neden olur?", secenekler: ["Çöp atmak", "Ağaç dikmek", "Geri dönüşüm", "Temizlik"], dogru: "A" },
+        { soru: "Aşağıdakilerden hangisi bir mevsim değildir?", secenekler: ["Yaz", "Kış", "Bahar", "Ay"], dogru: "D" },
+        { soru: "Aşağıdakilerden hangisi bir gezegendir?", secenekler: ["Dünya", "Güneş", "Ay", "Yıldız"], dogru: "A" }
+      ],
+      "4-Din Kültürü": [
+        { soru: "İslam'ın kutsal kitabı nedir?", secenekler: ["Tevrat", "İncil", "Kur'an", "Zebur"], dogru: "C" },
+        { soru: "Müslümanların ibadet ettiği yer neresidir?", secenekler: ["Kilise", "Cami", "Sinagog", "Tapınak"], dogru: "B" },
+        { soru: "Ramazan ayında tutulan ibadetin adı nedir?", secenekler: ["Namaz", "Oruç", "Zekat", "Hac"], dogru: "B" },
+        { soru: "Hz. Muhammed'in doğduğu şehir hangisidir?", secenekler: ["Medine", "Kudüs", "Mekke", "İstanbul"], dogru: "C" },
+        { soru: "Müslümanların cuma günü topluca kıldığı namazın adı nedir?", secenekler: ["Bayram Namazı", "Cuma Namazı", "Teravih Namazı", "Sabah Namazı"], dogru: "B" },
+        { soru: "İslam'ın şartlarından biri değildir?", secenekler: ["Oruç", "Zekat", "Hac", "Vaftiz"], dogru: "D" },
+        { soru: "Müslümanların kutsal günü hangisidir?", secenekler: ["Pazar", "Cumartesi", "Cuma", "Pazartesi"], dogru: "C" },
+        { soru: "Kurban Bayramı'nda yapılan ibadet nedir?", secenekler: ["Oruç", "Kurban Kesmek", "Namaz", "Zekat"], dogru: "B" },
+        { soru: "İslam'da Allah'a inanmak neyle ifade edilir?", secenekler: ["İman", "İbadet", "Sadaka", "Namaz"], dogru: "A" },
+        { soru: "Peygamberlere gönderilen mesajlara ne denir?", secenekler: ["Hadis", "Vahiy", "Dua", "Namaz"], dogru: "B" }
+      ],
+    };
+
+    let timerInterval;
+    let kalanSaniye = 600;
+
+    function showExam(ders) {
+      const sorular = SINAV_SORULARI[ders] || [];
+      if (sorular.length === 0) {
+        document.getElementById('main-content').innerHTML = `<div class="alert alert-warning mt-4">Bu sınav henüz hazırlanmadı.</div>`;
+        return;
+      }
+      kalanSaniye = 600;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        kalanSaniye--;
+        updateTimer();
+        if (kalanSaniye <= 0) {
+          clearInterval(timerInterval);
+          finishExam(ders, true);
+        }
+      }, 1000);
+
+      let icerik = `
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:18px;">
+          <button type="button" class="btn btn-primary" onclick="finishExam('${ders}')">Sınavı Bitir</button>
+          <button type="button" class="btn btn-secondary" onclick="showLessons(${ders.split('-')[0]})">Geri Dön</button>
+        </div>
+        <div id="timer">Kalan Süre: 10:00</div>
+        <h2 class="mb-4">${ders.replace('-',' ')} Sınavı</h2>
+        <form id="examForm">
+      `;
+      sorular.forEach((s, i) => {
+        icerik += `<div class="question-box">${i+1}. Soru: ${s.soru}<br>`;
+        ["A","B","C","D"].forEach((sec, j) => {
+          icerik += `<label><input type="radio" name="q${i}" value="${sec}"> ${sec}) ${s.secenekler[j]}</label>`;
+        });
+        icerik += `</div>`;
+      });
+      icerik += `</form>`;
+      document.getElementById('main-content').innerHTML = icerik;
+      updateTimer();
+    }
+
+    function updateTimer() {
+      const dakika = Math.floor(kalanSaniye/60).toString().padStart(2,"0");
+      const saniye = (kalanSaniye%60).toString().padStart(2,"0");
+      const timerDiv = document.getElementById('timer');
+      if(timerDiv) timerDiv.textContent = `Kalan Süre: ${dakika}:${saniye}`;
+    }
+
+function finishExam(ders, sureBitti=false) {
+  clearInterval(timerInterval);
+  const sorular = SINAV_SORULARI[ders] || [];
+  let dogru = 0, yanlis = 0, bos = 0;
+  for(let i=0;i<sorular.length;i++) {
+    const secili = document.querySelector(`input[name="q${i}"]:checked`);
+    if(!secili) { bos++; continue; }
+    if(secili.value === sorular[i].dogru) dogru++;
+    else yanlis++;
+  }
+  const puan = Math.round((dogru/sorular.length)*100);
+  document.getElementById('main-content').innerHTML = `
+    <h2 class="mb-4">${ders.replace('-',' ')} Sınav Sonucu</h2>
+    <div class="text-center">
+      Doğru: <b>${dogru}</b> &nbsp; Yanlış: <b>${yanlis}</b> &nbsp; Boş: <b>${bos}</b><br>
+      Puan: <b>${puan}</b>
+      ${sureBitti ? "<div class='mt-2 text-danger'>Süre bittiği için sınav otomatik olarak sonlandırıldı.</div>" : ""}
+    </div>
+    <div class="text-center mt-3"><button class="btn btn-secondary" onclick="showMain()">Ana Sayfa</button></div>
+  `;
+  kaydetSonTest(ders, dogru, yanlis, bos, puan);
+}
+function kaydetSonTest(ders, dogru, yanlis, bos, puan) {
+  const kullanici = localStorage.getItem("aktifKullanici");
+  if (!kullanici) return;
+  const key = "sonTestler_" + kullanici;
+  let liste = [];
+  try { liste = JSON.parse(localStorage.getItem(key)) || []; } catch {}
+  const tarih = new Date();
+  liste.unshift({
+    ders,
+    dogru,
+    yanlis,
+    bos,
+    puan,
+    tarih: tarih.toLocaleString("tr-TR")
+  });
+  if (liste.length > 10) liste = liste.slice(0, 10);
+  localStorage.setItem(key, JSON.stringify(liste));
+}
+function gosterSonTestlerPaneli(yanPanel=false) {
+  const kullanici = localStorage.getItem("aktifKullanici");
+  const panel = document.getElementById("son-testler-paneli");
+  const ul = document.getElementById("son-testler-listesi");
+  if (!kullanici) { panel.style.display = "none"; return; }
+  // Toggle davranışı: Eğer yanPanel true ve panel açıksa kapat
+  if (yanPanel && panel.style.display === "block") {
+    panel.style.display = "none";
+    return;
+  }
+  let liste = [];
+  try { liste = JSON.parse(localStorage.getItem("sonTestler_" + kullanici)) || []; } catch {}
+  ul.innerHTML = "";
+  if (liste.length === 0) {
+    ul.innerHTML = `<li class="list-group-item text-muted">Henüz hiç test çözmediniz.</li>`;
+  } else {
+    liste.forEach(item => {
+      ul.innerHTML += `<li class="list-group-item">
+        <b>${item.ders.replace('-',' ')}</b> - ${item.tarih}<br>
+        Doğru: <b>${item.dogru}</b>, Yanlış: <b>${item.yanlis}</b>, Boş: <b>${item.bos}</b>, Puan: <b>${item.puan}</b>
+      </li>`;
+    });
+  }
+  panel.style.display = "block";
+  if (yanPanel) {
+    window.scrollTo({top: panel.offsetTop-40, behavior:"smooth"});
+    return;
+  }
+  panel.style.display = "block";
+  // Eğer yanPanel true ise sadece paneli göster, ana içeriği değiştirme
+  if (yanPanel) {
+    // Paneli öne çıkar, ana içeriği değiştirme
+    window.scrollTo({top: panel.offsetTop-40, behavior:"smooth"});
+    return;
+  }
+}
+function guncelleTopButtons() {
+  const girisli = !!localStorage.getItem("aktifKullanici");
+  document.querySelector('.top-buttons').style.display = girisli ? "none" : "flex";
+  let cikisBtn = document.getElementById("cikisBtn");
+  if (girisli && !cikisBtn) {
+    cikisBtn = document.createElement("button");
+    cikisBtn.id = "cikisBtn";
+    cikisBtn.className = "btn btn-danger btn-sm";
+    cikisBtn.innerText = "Çıkış Yap";
+    cikisBtn.onclick = cikisYap;
+    document.body.appendChild(cikisBtn);
+    cikisBtn.style.position = "fixed";
+    cikisBtn.style.top = "18px";
+    cikisBtn.style.right = "32px";
+    cikisBtn.style.zIndex = "100";
+  } else if (!girisli && cikisBtn) {
+    cikisBtn.remove();
+  }
+  guncelleSinavSonuclariBtn();
+}
+
+    function uyeOl(e) {
+      e.preventDefault();
+      const email = document.getElementById('uyeEmail').value.trim();
+      const sifre = document.getElementById('uyeSifre').value;
+      if(localStorage.getItem('user_'+email)) {
+        alert("Bu mail ile zaten kayıt olunmuş.");
+        return;
+      }
+      localStorage.setItem('user_'+email, sifre);
+      alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+      bootstrap.Modal.getInstance(document.getElementById('uyeModal')).hide();
+    }
+
+    function girisYap(e) {
+      e.preventDefault();
+      const email = document.getElementById('girisEmail').value.trim();
+      const sifre = document.getElementById('girisSifre').value;
+      if(!email.endsWith('@gmail.com')) {
+        alert("Sadece gmail adresi ile giriş yapılabilir!");
+        return;
+      }
+      const kayitli = localStorage.getItem('user_'+email);
+      if(kayitli && kayitli === sifre) {
+        alert("Giriş başarılı!");
+        localStorage.setItem("aktifKullanici", email);
+        bootstrap.Modal.getInstance(document.getElementById('girisModal')).hide();
+        showMain();
+        guncelleTopButtons();
+      } else {
+        alert("Mail veya şifre hatalı!");
+      }
+    }
+
+    function adminGiris(e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const sifre = document.getElementById('adminSifre').value;
+      if(email === "admin@gmail.com" && sifre === "admin1234") {
+        alert("Admin girişi başarılı!");
+        localStorage.setItem("aktifKullanici", email);
+        bootstrap.Modal.getInstance(document.getElementById('adminModal')).hide();
+        showMain();
+        guncelleTopButtons();
+      } else {
+        alert("Admin mail veya şifre hatalı!");
+      }
+    }
+
+    function cikisYap() {
+      localStorage.removeItem("aktifKullanici");
+      showMain();
+      guncelleTopButtons();
+    }
+
+    // Yorum ekleme
+    function addYorum(e) {
+      e.preventDefault();
+      const ad = document.getElementById('yorum-ad').value.trim();
+      const metin = document.getElementById('yorum-metin').value.trim();
+      if(ad && metin) {
+        const yorumlar = document.getElementById('yorumlar-listesi');
+        const yeni = document.createElement('div');
+        yeni.className = "comment-item";
+        yeni.innerHTML = `<b>${ad}</b> <span style="color:#aaa; font-size:0.9em;">- Ziyaretçi</span><br>${metin}`;
+        yorumlar.insertBefore(yeni, yorumlar.firstChild);
+        document.getElementById('yorum-formu').reset();
+      }
+    }
+
+    // Sınav fonksiyonları (örnek)
+   // ...existing code...
+function showLessons(sinif) {
+  let html = `<h2 class="mb-4">${sinif}. Sınıf</h2>
+  <div class="lesson-btns">`;
+  if (sinif == 2) {
+    html += `
+      <button class="btn btn-outline-primary" onclick="showExamStart('2-Türkçe')">Türkçe</button>
+      <button class="btn btn-outline-success" onclick="showExamStart('2-Matematik')">Matematik</button>
+      <button class="btn btn-outline-warning" onclick="showExamStart('2-İngilizce')">İngilizce</button>
+      <button class="btn btn-outline-info" onclick="showExamStart('2-Hayat Bilgisi')">Hayat Bilgisi</button>
+    `;
+  } else if (sinif == 3) {
+    html += `
+      <button class="btn btn-outline-primary" onclick="showExamStart('3-Türkçe')">Türkçe</button>
+      <button class="btn btn-outline-success" onclick="showExamStart('3-Matematik')">Matematik</button>
+      <button class="btn btn-outline-warning" onclick="showExamStart('3-İngilizce')">İngilizce</button>
+      <button class="btn btn-outline-info" onclick="showExamStart('3-Hayat Bilgisi')">Hayat Bilgisi</button>
+      <button class="btn btn-outline-secondary" onclick="showExamStart('3-Fen Bilimleri')">Fen Bilimleri</button>
+    `;
+  } else if (sinif == 4) {
+    html += `
+      <button class="btn btn-outline-primary" onclick="showExamStart('4-Türkçe')">Türkçe</button>
+      <button class="btn btn-outline-success" onclick="showExamStart('4-Matematik')">Matematik</button>
+      <button class="btn btn-outline-warning" onclick="showExamStart('4-İngilizce')">İngilizce</button>
+      <button class="btn btn-outline-info" onclick="showExamStart('4-Hayat Bilgisi')">Hayat Bilgisi</button>
+      <button class="btn btn-outline-secondary" onclick="showExamStart('4-Fen Bilimleri')">Fen Bilimleri</button>
+      <button class="btn btn-outline-dark" onclick="showExamStart('4-Din Kültürü')">Din Kültürü</button>
+    `;
+  } else {
+    html += `
+      <button class="btn btn-outline-primary" onclick="showExamStart('${sinif}-Türkçe')">Türkçe</button>
+      <button class="btn btn-outline-success" onclick="showExamStart('${sinif}-Matematik')">Matematik</button>
+      <button class="btn btn-outline-warning" onclick="showExamStart('${sinif}-İngilizce')">İngilizce</button>
+    `;
+  }
+  html += `</div>
+  <button class="btn btn-secondary back-btn" onclick="showMain()">Geri Dön</button>`;
+  document.getElementById('main-content').innerHTML = html;
+}
+// ...existing code...
+    function showExamStart(ders) {
+      document.getElementById('main-content').innerHTML = `
+        <h2 class="mb-4">${ders.replace('-',' ')} Sınavı</h2>
+        <div class="text-center mb-4">
+          <button class="btn btn-success btn-lg" onclick="showExam('${ders}')">Sınavı Başlat</button>
+        </div>
+        <button class="btn btn-secondary back-btn" onclick="showLessons(${ders.split('-')[0]})">Geri Dön</button>
+      `;
+    }
+
+// Sınav Sonuçları butonunu ekle/gizle
+function guncelleSinavSonuclariBtn() {
+  let btn = document.getElementById("sonuclarBtn");
+  const girisli = !!localStorage.getItem("aktifKullanici");
+  if (girisli && !btn) {
+    btn = document.createElement("button");
+    btn.id = "sonuclarBtn";
+    btn.className = "btn btn-info btn-sm";
+    btn.innerText = "Sınav Sonuçları";
+    btn.onclick = ()=>gosterSonTestlerPaneli(true);
+    document.body.appendChild(btn);
+    btn.style.position = "fixed";
+    btn.style.top = "18px";
+    btn.style.right = "140px";
+    btn.style.zIndex = "100";
+  } else if (!girisli && btn) {
+    btn.remove();
+  }
+}
+function showMain() {
+  document.getElementById('main-content').innerHTML = `
+    <div class="search-area">
+      <form id="aramaForm" class="d-flex mb-2">
+        <input id="aramaInput" class="form-control me-2" type="search" placeholder="Sınav ara..." aria-label="Ara">
+        <button class="btn btn-outline-success" type="submit">Ara</button>
+      </form>
+      <div id="aramaSonucAlani"></div>
+      <div class="most-searched">
+        <div class="most-searched-title">En Çok Aranan Sınavlar</div>
+        <div class="most-searched-list">
+          <span class="badge bg-primary" style="cursor:pointer;" onclick="hizliArama('8. Sınıf')">8. Sınıf</span>
+          <span class="badge bg-success" style="cursor:pointer;" onclick="hizliArama('Matematik')">Matematik</span>
+          <span class="badge bg-warning text-dark" style="cursor:pointer;" onclick="hizliArama('1. Sınıf')">1. Sınıf</span>
+          <span class="badge bg-info text-dark" style="cursor:pointer;" onclick="hizliArama('İngilizce')">İngilizce</span>
+          <span class="badge bg-danger" style="cursor:pointer;" onclick="hizliArama('12. Sınıf')">12. Sınıf</span>
+          <span class="badge bg-secondary" style="cursor:pointer;" onclick="hizliArama('Türkçe')">Türkçe</span>
+        </div>
+      </div>
+    </div>
+    <div class="welcome-box" id="welcome-box">
+      <div class="welcome-title">Hoşgeldiniz!</div>
+      <div class="welcome-desc">
+        Soldaki sınıf kutularından birini seçerek sınavlara ulaşabilir, ortadaki arama motorunu kullanarak istediğiniz sınavı hızlıca bulabilirsiniz.<br>
+        Sağda ise platform hakkında bilgi ve kullanıcı yorumlarını görebilir, siz de yorum bırakabilirsiniz.
+      </div>
+    </div>
+  `;
+  guncelleTopButtons();
+  // Event bağlama
+  document.getElementById('aramaForm').onsubmit = aramaYap;
+}
+
+function aramaYap(e) {
+  e.preventDefault();
+  const deger = document.getElementById('aramaInput').value.trim().toLowerCase();
+  let sonucAlani = document.getElementById('aramaSonucAlani');
+  if (!sonucAlani) return;
+  if (deger === "") {
+    sonucAlani.innerHTML = `<div class="alert alert-info mt-4">Arama kutusuna bir ders, sınıf veya kategori yazınız.</div>`;
+    return;
+  }
+  if (["matematik","türkçe","ingilizce"].some(x=>deger.includes(x))) {
+    sonucAlani.innerHTML = `
+      <h3 class="mb-3">Arama Sonuçları</h3>
+      <div class="list-group">
+        <button class="list-group-item list-group-item-action" onclick="showExamStart('1-Matematik')">1. Sınıf Matematik</button>
+        <button class="list-group-item list-group-item-action" onclick="showExamStart('2-Türkçe')">2. Sınıf Türkçe</button>
+      </div>
+      <button class="btn btn-secondary mt-4" onclick="showMain()">Ana Sayfa</button>
+    `;
+  } else {
+    sonucAlani.innerHTML = `<div class="alert alert-warning mt-4">Aradığınız sınav bulunamadı.</div>`;
+  }
+}
+
+function hizliArama(kelime) {
+  document.getElementById('aramaInput').value = kelime;
+  aramaYap({preventDefault:()=>{}});
+}
+window.showMain = showMain;
+window.aramaYap = aramaYap;
+window.hizliArama = hizliArama;
+window.showExamStart = showExamStart;
+window.showExam = showExam;
+window.showLessons = showLessons;
+window.finishExam = finishExam;
+window.gosterSonTestlerPaneli = gosterSonTestlerPaneli;
+window.uyeOl = uyeOl;
+window.girisYap = girisYap;
+window.adminGiris = adminGiris;
+window.cikisYap = cikisYap;
+window.addYorum = addYorum;
+
+// Sayfa ilk açıldığında ana ekranı göster
+showMain();
+</script>
+</body>
+</html>
